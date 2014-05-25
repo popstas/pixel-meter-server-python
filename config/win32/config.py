@@ -1,0 +1,1 @@
+config = { 'comportname': 'COM3' }
