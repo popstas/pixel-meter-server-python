@@ -7,8 +7,8 @@ from lib.PixelTrayIcon import PixelTrayIcon
 from pubsub import pub
 
 class TaskBarFrame(wx.Frame):
-    def __init__(self, parent, title):
-        wx.Frame.__init__(self, parent, style=wx.FRAME_NO_TASKBAR)
+    def __init__(self):
+        wx.Frame.__init__(self, None, style=wx.FRAME_NO_TASKBAR)
         #panel = wx.Panel(self)
         self.tbicon = PixelTrayIcon(self, 'images/icon.png', 'Pixel server')
         self.Bind(wx.EVT_CLOSE, self.onClose)
@@ -23,12 +23,12 @@ class TaskBarFrame(wx.Frame):
     def onClose(self, evt):
         self.tbicon.RemoveIcon()
         self.tbicon.Destroy()
-        self.server.HTTPServer.socket.close()
+        self.server.HTTPServer.socket.close()  # TODO: server exit with exception
         self.Destroy()
 
 def main():
     app = wx.App(False)
-    TaskBarFrame(None, "testing frame")
+    TaskBarFrame()
 
     #server.info()
 

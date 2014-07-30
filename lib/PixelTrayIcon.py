@@ -17,20 +17,33 @@ class PixelTrayIcon(wx.TaskBarIcon):
         self.Bind(wx.EVT_MENU, self.OnTaskBarClose, id=self.TBMENU_CLOSE)
         self.Bind(wx.EVT_TASKBAR_LEFT_DOWN, self.OnTaskBarLeftClick)
 
+        self.comports = []
+        pub.subscribe(self.update_comports, 'comports')
+
         pub.subscribe(self.pixelListener, 'pixel')
 
     def pixelListener(self, val, msg='', bright='', source=''):
-        print(val, msg, bright, source)
         if val != '-1':
             self.ShowBalloon(source, msg)
 
     def CreatePopupMenu(self):
         menu = wx.Menu()
-        # menu.Append(self.TBMENU_RESTORE, "Open Program")
+        #portmenu = wx.MenuItemList()
+        for port in self.comports:
+            menu.Append(wx.NewId(), port)
+        menu.Append(wx.NewId(), self.active_port)
+
+        #menu.Append(portmenu)
+        #portitem = wx.MenuItem(wx.NewId(), "COM Ports")
+
         # menu.Append(self.TBMENU_LOG, "Show log")
-        # menu.AppendSeparator()
+        menu.AppendSeparator()
         menu.Append(self.TBMENU_CLOSE, "Exit")
         return menu
+
+    def update_comports(self, comports, active):
+        self.comports = comports
+        self.active_port = active + ' (active)'
 
     def set_icon(self, path):
         # icon = wx.TaskBarIcon()

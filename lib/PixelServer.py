@@ -1,5 +1,6 @@
 import serial
-import BaseHTTPServer
+import os
+from serial.tools import list_ports
 from BaseHTTPServer import HTTPServer
 import threading
 from pubsub import pub
@@ -18,11 +19,27 @@ class PixelServer:
     def startPort(self, comport):
         port = serial.Serial(comport)
         port.timeout = 0.5
+        pub.sendMessage('comports', comports=self.getPorts(), active=comport)
         return port
 
     def pixelListener(self, val, msg='', bright='', source=''):
         command = val + "|" + msg + ("|" + bright if bright != "" else "") + "\n"
         self.comport.write(command)
+
+    def getPorts(self):
+        if os.name == 'nt':
+            # windows
+            for i in range(256):
+                try:
+                    s = serial.Serial(i)
+                    s.close()
+                    yield 'COM' + str(i + 1)
+                except serial.SerialException:
+                    pass
+        else:
+            # unix
+            for port in list_ports.comports():
+                yield port[0]
 
     def info(self):
         print self.comport.getSettingsDict()

@@ -1,14 +1,13 @@
-import BaseHTTPServer
 from BaseHTTPServer import BaseHTTPRequestHandler
 import urlparse
 import time
 from pubsub import pub
 
-class PixelServerHandler(BaseHTTPServer.BaseHTTPRequestHandler):
+class PixelServerHandler(BaseHTTPRequestHandler):
     def __init__(self, *args):
         self.server_version = "Pixel server"
         self.loglist = []
-        BaseHTTPServer.BaseHTTPRequestHandler.__init__(self, *args)
+        BaseHTTPRequestHandler.__init__(self, *args)
 
     def __headers(self):
         self.send_response(200)
