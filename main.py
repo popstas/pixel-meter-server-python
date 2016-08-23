@@ -1,4 +1,6 @@
-﻿import wx
+﻿#!/usr/bin/python
+
+import wx
 import time
 from lib import *
 from lib.PixelServer import PixelServer
